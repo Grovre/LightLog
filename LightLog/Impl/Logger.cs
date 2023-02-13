@@ -17,9 +17,10 @@ public sealed class Logger : ILogger, IRedirection<TextWriter>
         return textWriter;
     }
 
-    public void Log(string log)
+    public bool Log(string log)
     {
         _textWriter.WriteLine($"{ILogger.DatePrefix} {log}");
+        return true;
     }
 
     public void Dispose()

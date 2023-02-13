@@ -2,8 +2,8 @@
 
 public interface ILogger : IDisposable
 {
-    TextWriter _textWriter { get; internal set; }
+    internal TextWriter _textWriter { get; set; }
     static string DatePrefix => $"[{DateTime.Now}]";
 
-    void Log(string log);
+    bool Log(string log);
 }
