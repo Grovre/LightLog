@@ -8,6 +8,15 @@
         <PackageId>LighterLog</PackageId>
         <Version>0.9</Version>
         <Authors>Grovre</Authors>
+        <RepositoryUrl>https://github.com/Grovre/LightLog</RepositoryUrl>
+        <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <Description>A WIP lightweight logger that's nearly as fast as just using Console.WriteLine</Description>
     </PropertyGroup>
+    
+    <ItemGroup>
+        <None Include="LICENSE.txt" Pack="true" PackagePath="LICENSE.txt"/>
+        <None Include="README.md" Pack="true" PackagePath="README.md"/>
+    </ItemGroup>
 
 </Project>
