@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         
         <PackageId>LighterLog</PackageId>
-        <Version>0.9</Version>
+        <Version>0.9.1</Version>
         <Authors>Grovre</Authors>
         <RepositoryUrl>https://github.com/Grovre/LightLog</RepositoryUrl>
         <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>

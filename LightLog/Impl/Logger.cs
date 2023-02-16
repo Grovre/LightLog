@@ -8,7 +8,7 @@ namespace LightLog.Impl;
 /// </summary>
 public sealed class Logger : ILogger, IRedirection<TextWriter>
 {
-    public TextWriter _textWriter { get; set; }
+    public TextWriter TextWriter { get; set; }
 
     /// <summary>
     /// Creates a new Logger for logging
@@ -16,7 +16,7 @@ public sealed class Logger : ILogger, IRedirection<TextWriter>
     /// <param name="textWriter">The TextWriter to log to</param>
     public Logger(TextWriter textWriter)
     {
-        _textWriter = textWriter;
+        TextWriter = textWriter;
     }
 
     /// <summary>
@@ -26,10 +26,10 @@ public sealed class Logger : ILogger, IRedirection<TextWriter>
     /// going to be used.
     /// </summary>
     /// <param name="textWriter"></param>
-    /// <returns></returns>
+    /// <returns>The previous TextWriter in use</returns>
     public TextWriter Redirect(TextWriter textWriter)
     {
-        (_textWriter, textWriter) = (textWriter, _textWriter);
+        (TextWriter, textWriter) = (textWriter, TextWriter);
         return textWriter;
     }
 
@@ -41,8 +41,18 @@ public sealed class Logger : ILogger, IRedirection<TextWriter>
     /// <returns>Whether the log was written correctly. Always true.</returns>
     public bool Log(string log)
     {
-        _textWriter.WriteLine($"{ILogger.DatePrefix} {log}");
+        TextWriter.WriteLine($"{ILogger.DatePrefix} {log}");
         return true;
+    }
+    
+    public bool Warn(string logWarning)
+    {
+        return Log($"{ILogger.WarnPrefix}{logWarning}");
+    }
+
+    public bool Error(string logError)
+    {
+        return Log($"{ILogger.ErrorPrefix}{logError}");
     }
 
     /// <summary>
@@ -53,6 +63,6 @@ public sealed class Logger : ILogger, IRedirection<TextWriter>
     /// </summary>
     public void Dispose()
     {
-        _textWriter.Dispose();
+        TextWriter.Dispose();
     }
 }

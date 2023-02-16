@@ -14,7 +14,7 @@ public sealed class AsyncLogger : ILogger
     internal readonly BlockingCollection<string> BlockingQueue;
     internal readonly ManualResetEvent DoneLoggingEvent;
     private readonly CancellationTokenSource _cancellationToken;
-    public TextWriter _textWriter { get; set; }
+    public TextWriter TextWriter { get; set; }
 
     /// <summary>
     /// Instantiates an AsyncLogger
@@ -25,7 +25,7 @@ public sealed class AsyncLogger : ILogger
         BlockingQueue = new();
         DoneLoggingEvent = new(false);
         _cancellationToken = new();
-        _textWriter = textWriter;
+        TextWriter = textWriter;
 
         new Thread(() =>
         {
@@ -34,18 +34,18 @@ public sealed class AsyncLogger : ILogger
                 while (!_cancellationToken.IsCancellationRequested)
                 {
                     var log = BlockingQueue.Take(_cancellationToken.Token);
-                    _textWriter.WriteLine(log);
+                    TextWriter.WriteLine(log);
                     if (BlockingQueue.IsCompleted)
                         _cancellationToken.Cancel();
                 }
             }
             catch (OperationCanceledException)
             {
-
+                // Stopping a blocking queue Take is intended if the cancellation token ended the method
             }
             catch (InvalidOperationException)
             {
-                
+                // See catch above
             }
 
             DoneLoggingEvent.Set();
@@ -79,6 +79,16 @@ public sealed class AsyncLogger : ILogger
             return false;
         Task.Run(() => BlockingQueue.Add($"{ILogger.DatePrefix} {log}"));
         return true;
+    }
+
+    public bool Warn(string logWarning)
+    {
+        return Log($"{ILogger.WarnPrefix}{logWarning}");
+    }
+
+    public bool Error(string logError)
+    {
+        return Log($"{ILogger.ErrorPrefix}{logError}");
     }
 
     /// <summary>
@@ -116,7 +126,7 @@ public sealed class AsyncLogger : ILogger
         DoneLoggingEvent.Set();
         BlockingQueue.CompleteAdding();
         _cancellationToken.Dispose();
-        _textWriter.Dispose();
+        TextWriter.Dispose();
         BlockingQueue.Dispose();
         DoneLoggingEvent.Dispose();
     }
