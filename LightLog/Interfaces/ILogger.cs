@@ -2,7 +2,7 @@
 
 public interface ILogger : IDisposable
 {
-    internal TextWriter TextWriter { get; set; }
+    internal TextWriter TextWriter { get; }
     static string DatePrefix => $"[{DateTime.Now}]";
     static string WarnPrefix => "*[WARNING]";
     static string ErrorPrefix => "***[ERROR]";
