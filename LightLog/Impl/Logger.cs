@@ -8,7 +8,7 @@ namespace LightLog.Impl;
 /// </summary>
 public sealed class Logger : ILogger, IRedirection<TextWriter>
 {
-    public TextWriter TextWriter { get; set; }
+    public TextWriter TextWriter { get; private set; }
 
     /// <summary>
     /// Creates a new Logger for logging

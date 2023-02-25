@@ -14,7 +14,7 @@ public sealed class AsyncLogger : ILogger
     internal readonly BlockingCollection<string> BlockingQueue;
     internal readonly ManualResetEvent DoneLoggingEvent;
     private readonly CancellationTokenSource _cancellationToken;
-    public TextWriter TextWriter { get; set; }
+    public TextWriter TextWriter { get; private set; }
 
     /// <summary>
     /// Instantiates an AsyncLogger
