@@ -7,7 +7,7 @@ namespace LightLog.Impl;
 /// A logger class that runs asynchronously on its own thread.
 /// Logging only passes the string and everything else will be
 /// done on the logger thread to avoid the loss of time in
-/// string interpolation and printing. Order is not guaranteed.
+/// string interpolation and printing. Order of concurrent logs is not guaranteed.
 /// </summary>
 public sealed class AsyncLogger : ILogger
 {

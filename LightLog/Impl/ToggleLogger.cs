@@ -2,9 +2,18 @@
 
 namespace LightLog.Impl;
 
+/// <summary>
+/// Sealed wrapper class for an ILogger that includes a
+/// boolean toggle that enables and disables logging to
+/// provide greater control of logs to the user
+/// </summary>
 public sealed class ToggleLogger : ILogger
 {
     internal ILogger _backingLogger { get; set; }
+    /// <summary>
+    /// A boolean determining whether or not to actively log.
+    /// Set with the toggle method.
+    /// </summary>
     public bool IsActive { get; internal set; }
 
     public TextWriter TextWriter => _backingLogger.TextWriter;
@@ -14,6 +23,9 @@ public sealed class ToggleLogger : ILogger
         _backingLogger = backingLogger;
     }
 
+    /// <summary>
+    /// Toggles whether logging should be enabled or disabled.
+    /// </summary>
     public void Toggle(bool enabled)
     {
         IsActive = enabled;
