@@ -6,7 +6,7 @@ namespace LightLog.Impl;
 /// A synchronous logger that writes to the given
 /// TextWriter, prefixed by the local date and time.
 /// </summary>
-public sealed class Logger : ILogger, IRedirection<TextWriter>
+public sealed partial class Logger : ILogger, IRedirection<TextWriter>
 {
     public TextWriter TextWriter { get; private set; }
 
@@ -20,8 +20,8 @@ public sealed class Logger : ILogger, IRedirection<TextWriter>
     }
 
     /// <summary>
-    /// Changes the TextWriter used and returns
-    /// the previous one in use. Dispose the
+    /// Changes the TextWriter used to the given one and returns
+    /// the previous one in use. Remember to dispose the
     /// returned TextWriter if it is no longer
     /// going to be used.
     /// </summary>
@@ -59,7 +59,6 @@ public sealed class Logger : ILogger, IRedirection<TextWriter>
     /// Disposes of everything this object
     /// uses internally, along with the TextWriter
     /// used to write to.
-    /// </summary>
     /// </summary>
     public void Dispose()
     {
