@@ -52,15 +52,17 @@ public sealed partial class Logger : ILogger, IRedirection<TextWriter>
     public bool Warn(string logWarning)
     {
         PreLogActions?.Invoke(this);
-        return Log($"{ILogger.WarnPrefix}{logWarning}");
+        var result = Log($"{ILogger.WarnPrefix}{logWarning}");
         PostLogActions?.Invoke(this);
+        return result;
     }
 
     public bool Error(string logError)
     {
         PreLogActions?.Invoke(this);
-        return Log($"{ILogger.ErrorPrefix}{logError}");
+        var result = Log($"{ILogger.ErrorPrefix}{logError}");
         PostLogActions?.Invoke(this);
+        return result;
     }
 
     /// <inheritdoc cref="TextWriter"/>
