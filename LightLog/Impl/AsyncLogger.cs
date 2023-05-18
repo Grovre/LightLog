@@ -98,7 +98,7 @@ public sealed class AsyncLogger : ILogger
     }
 
     /// <inheritdoc cref="TextWriter"/>
-    public async void FlushAsync()
+    public async Task FlushAsync()
     {
         await TextWriter.FlushAsync();
     }

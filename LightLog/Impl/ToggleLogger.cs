@@ -53,7 +53,7 @@ public sealed class ToggleLogger : ILogger
     }
 
     /// <inheritdoc cref="TextWriter"/>
-    public async void FlushAsync()
+    public async Task FlushAsync()
     {
         await TextWriter.FlushAsync();
     }

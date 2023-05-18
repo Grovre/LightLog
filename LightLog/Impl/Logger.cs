@@ -9,6 +9,8 @@ namespace LightLog.Impl;
 public sealed partial class Logger : ILogger, IRedirection<TextWriter>
 {
     public TextWriter TextWriter { get; private set; }
+    public event Action<Logger>? PreLogActions;
+    public event Action<Logger>? PostLogActions;
 
     /// <summary>
     /// Creates a new Logger for logging
@@ -41,18 +43,24 @@ public sealed partial class Logger : ILogger, IRedirection<TextWriter>
     /// <returns>Whether the log was written correctly. Always true.</returns>
     public bool Log(string log)
     {
+        PreLogActions?.Invoke(this);
         TextWriter.WriteLine($"{ILogger.DatePrefix} {log}");
+        PostLogActions?.Invoke(this);
         return true;
     }
     
     public bool Warn(string logWarning)
     {
+        PreLogActions?.Invoke(this);
         return Log($"{ILogger.WarnPrefix}{logWarning}");
+        PostLogActions?.Invoke(this);
     }
 
     public bool Error(string logError)
     {
+        PreLogActions?.Invoke(this);
         return Log($"{ILogger.ErrorPrefix}{logError}");
+        PostLogActions?.Invoke(this);
     }
 
     /// <inheritdoc cref="TextWriter"/>
@@ -62,7 +70,7 @@ public sealed partial class Logger : ILogger, IRedirection<TextWriter>
     }
 
     /// <inheritdoc cref="TextWriter"/>
-    public async void FlushAsync()
+    public async Task FlushAsync()
     {
         await TextWriter.FlushAsync();
     }

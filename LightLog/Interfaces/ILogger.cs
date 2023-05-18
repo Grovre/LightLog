@@ -17,6 +17,6 @@ public interface ILogger : IDisposable
     bool Error(string logError);
 
     void Flush();
-    void FlushAsync();
+    Task FlushAsync();
     void Close();
 }
