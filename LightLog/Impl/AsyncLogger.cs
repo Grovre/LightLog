@@ -91,6 +91,24 @@ public sealed class AsyncLogger : ILogger
         return Log($"{ILogger.ErrorPrefix}{logError}");
     }
 
+    /// <inheritdoc cref="TextWriter"/>
+    public void Flush()
+    {
+        TextWriter.Flush();
+    }
+
+    /// <inheritdoc cref="TextWriter"/>
+    public async void FlushAsync()
+    {
+        await TextWriter.FlushAsync();
+    }
+
+    /// <inheritdoc cref="TextWriter"/>
+    public void Close()
+    {
+        TextWriter.Close();
+    }
+
     /// <summary>
     /// Denies any more logs to be logged by this
     /// logger. The logger will finish printing the

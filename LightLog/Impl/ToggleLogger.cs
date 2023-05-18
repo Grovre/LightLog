@@ -45,7 +45,28 @@ public sealed class ToggleLogger : ILogger
     {
         return IsActive ? _backingLogger.Error(logError) : false;
     }
-    
+
+    /// <inheritdoc cref="TextWriter"/>
+    public void Flush()
+    {
+        TextWriter.Flush();
+    }
+
+    /// <inheritdoc cref="TextWriter"/>
+    public async void FlushAsync()
+    {
+        await TextWriter.FlushAsync();
+    }
+
+    /// <inheritdoc cref="TextWriter"/>
+    public void Close()
+    {
+        TextWriter.Close();
+    }
+
+    /// <summary>
+    /// Disposes of the backing logger
+    /// </summary>
     public void Dispose()
     {
         _backingLogger.Dispose();

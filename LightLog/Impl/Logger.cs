@@ -55,6 +55,24 @@ public sealed partial class Logger : ILogger, IRedirection<TextWriter>
         return Log($"{ILogger.ErrorPrefix}{logError}");
     }
 
+    /// <inheritdoc cref="TextWriter"/>
+    public void Flush()
+    {
+        TextWriter.Flush();
+    }
+
+    /// <inheritdoc cref="TextWriter"/>
+    public async void FlushAsync()
+    {
+        await TextWriter.FlushAsync();
+    }
+
+    /// <inheritdoc cref="TextWriter"/>
+    public void Close()
+    {
+        TextWriter.Close();
+    }
+
     /// <summary>
     /// Disposes of everything this object
     /// uses internally, along with the TextWriter
