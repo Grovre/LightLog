@@ -7,7 +7,7 @@ namespace LightLog.Impl;
 /// A synchronous logger that writes to the given
 /// TextWriter, prefixed by the local date and time.
 /// </summary>
-public sealed partial class Logger : ILogger, IFileLogger, IRedirection<TextWriter>
+public sealed partial class Logger : IAsyncLogger, IFileLogger, IRedirection<TextWriter>
 {
     public TextWriter TextWriter { get; private set; }
     public event Action<Logger>? PreLogActions;
@@ -99,5 +99,34 @@ public sealed partial class Logger : ILogger, IFileLogger, IRedirection<TextWrit
         var writer = new StreamWriter(fs);
         var logger = new Logger(writer);
         return logger;
+    }
+
+    public async Task<bool> LogAsync(string log)
+    {
+        PreLogActions?.Invoke(this);
+        var result = await LoggerHelper.CommitLogAsync(this, log, LogType.Log, true);
+        PostLogActions?.Invoke(this);
+        return result;
+    }
+
+    public async Task<bool> WarnAsync(string log)
+    {
+        PreLogActions?.Invoke(this);
+        var result = await LoggerHelper.CommitLogAsync(this, log, LogType.Warning, true);
+        PostLogActions?.Invoke(this);
+        return result;
+    }
+
+    public async Task<bool> ErrorAsync(string log)
+    {
+        PreLogActions?.Invoke(this);
+        var result = await LoggerHelper.CommitLogAsync(this, log, LogType.Error, true);
+        PostLogActions?.Invoke(this);
+        return result;
+    }
+
+    public async Task FlushAsync()
+    {
+        await TextWriter.FlushAsync();
     }
 }
