@@ -14,4 +14,24 @@ public static class LoggerHelper
         dbgLogger.Toggle(enabled: startEnabled);
         return dbgLogger;
     }
+
+    internal static string InterpolateLogString(string log, LogType logType)
+        => $"{ILogger.DatePrefix} {logType.GetPrefix()}{log}";
+
+    internal static bool CommitLog(ILogger logger, string log, LogType logType, bool flushAfter)
+    {
+        logger.TextWriter.WriteLine(InterpolateLogString(log, logType));
+        if (flushAfter)
+            logger.TextWriter.Flush();
+        return true;
+    }
+
+    internal static async Task<bool> CommitLogAsync(ILogger logger, string log, LogType logType, bool flushAfter)
+    {
+        await logger.TextWriter.WriteLineAsync(InterpolateLogString(log, logType));
+        if (flushAfter)
+            await logger.TextWriter.FlushAsync();
+
+        return true;
+    }
 }

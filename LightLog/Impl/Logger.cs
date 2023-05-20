@@ -1,4 +1,5 @@
-﻿using LightLog.Interfaces;
+﻿using LightLog.Impl.Helpers;
+using LightLog.Interfaces;
 
 namespace LightLog.Impl;
 
@@ -6,7 +7,7 @@ namespace LightLog.Impl;
 /// A synchronous logger that writes to the given
 /// TextWriter, prefixed by the local date and time.
 /// </summary>
-public sealed partial class Logger : ILogger, IRedirection<TextWriter>
+public sealed partial class Logger : ILogger, IFileLogger, IRedirection<TextWriter>
 {
     public TextWriter TextWriter { get; private set; }
     public event Action<Logger>? PreLogActions;
@@ -44,7 +45,7 @@ public sealed partial class Logger : ILogger, IRedirection<TextWriter>
     public bool Log(string log)
     {
         PreLogActions?.Invoke(this);
-        TextWriter.WriteLine($"{ILogger.DatePrefix} {log}");
+        LoggerHelper.CommitLog(this, log, LogType.Log, true);
         PostLogActions?.Invoke(this);
         return true;
     }
@@ -52,29 +53,23 @@ public sealed partial class Logger : ILogger, IRedirection<TextWriter>
     public bool Warn(string logWarning)
     {
         PreLogActions?.Invoke(this);
-        var result = Log($"{ILogger.WarnPrefix}{logWarning}");
+        LoggerHelper.CommitLog(this, logWarning, LogType.Warning, true);
         PostLogActions?.Invoke(this);
-        return result;
+        return true;
     }
 
     public bool Error(string logError)
     {
         PreLogActions?.Invoke(this);
-        var result = Log($"{ILogger.ErrorPrefix}{logError}");
+        LoggerHelper.CommitLog(this, logError, LogType.Error, true);
         PostLogActions?.Invoke(this);
-        return result;
+        return true;
     }
 
     /// <inheritdoc cref="TextWriter"/>
     public void Flush()
     {
         TextWriter.Flush();
-    }
-
-    /// <inheritdoc cref="TextWriter"/>
-    public async Task FlushAsync()
-    {
-        await TextWriter.FlushAsync();
     }
 
     /// <inheritdoc cref="TextWriter"/>
@@ -91,5 +86,18 @@ public sealed partial class Logger : ILogger, IRedirection<TextWriter>
     public void Dispose()
     {
         TextWriter.Dispose();
+    }
+
+    /// <summary>
+    /// Opens a file to log to with the defined path
+    /// </summary>
+    /// <param name="path">The path of the file</param>
+    /// <returns>A new logger with a StreamWriter to the given file</returns>
+    public static ILogger OpenFileLogger(string path)
+    {
+        var fs = File.OpenWrite(path);
+        var writer = new StreamWriter(fs);
+        var logger = new Logger(writer);
+        return logger;
     }
 }
