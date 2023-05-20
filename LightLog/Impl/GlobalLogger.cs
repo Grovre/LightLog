@@ -21,6 +21,6 @@ public partial class Logger
             return _globalLogger;
         }
 
-        internal set => _globalLogger = value;
+        set => _globalLogger = value;
     }
 }
