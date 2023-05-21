@@ -16,22 +16,25 @@ public static class LoggerHelper
     }
 
     internal static string InterpolateLogString(string log, LogType logType)
-        => $"{ILogger.DatePrefix} {logType.GetPrefix()}{log}";
+        => $"{ILogger.DatePrefix}{logType.GetPrefix()} {log}";
 
-    internal static bool CommitLog(ILogger logger, string log, LogType logType, bool flushAfter)
+    internal static string CommitLog(ILogger logger, string log, LogType logType, bool flushAfter)
     {
-        logger.TextWriter.WriteLine(InterpolateLogString(log, logType));
+        log = InterpolateLogString(log, logType);
+        logger.TextWriter.WriteLine(log);
         if (flushAfter)
             logger.TextWriter.Flush();
-        return true;
+
+        return log;
     }
 
-    internal static async Task<bool> CommitLogAsync(ILogger logger, string log, LogType logType, bool flushAfter)
+    internal static async Task<string> CommitLogAsync(ILogger logger, string log, LogType logType, bool flushAfter)
     {
-        await logger.TextWriter.WriteLineAsync(InterpolateLogString(log, logType));
+        log = InterpolateLogString(log, logType);
+        await logger.TextWriter.WriteLineAsync(log);
         if (flushAfter)
             await logger.TextWriter.FlushAsync();
-
-        return true;
+        
+        return log;
     }
 }

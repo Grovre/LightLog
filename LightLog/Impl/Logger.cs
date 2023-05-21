@@ -11,7 +11,7 @@ public sealed partial class Logger : IAsyncLogger, IFileLogger, IRedirection<Tex
 {
     public TextWriter TextWriter { get; private set; }
     public event Action<Logger>? PreLogActions;
-    public event Action<Logger>? PostLogActions;
+    public event Action<Logger, string>? PostLogActions;
 
     /// <summary>
     /// Creates a new Logger for logging
@@ -45,24 +45,24 @@ public sealed partial class Logger : IAsyncLogger, IFileLogger, IRedirection<Tex
     public bool Log(string log)
     {
         PreLogActions?.Invoke(this);
-        LoggerHelper.CommitLog(this, log, LogType.Log, true);
-        PostLogActions?.Invoke(this);
+        log = LoggerHelper.CommitLog(this, log, LogType.Log, true);
+        PostLogActions?.Invoke(this, log);
         return true;
     }
     
     public bool Warn(string logWarning)
     {
         PreLogActions?.Invoke(this);
-        LoggerHelper.CommitLog(this, logWarning, LogType.Warning, true);
-        PostLogActions?.Invoke(this);
+        logWarning = LoggerHelper.CommitLog(this, logWarning, LogType.Warning, true);
+        PostLogActions?.Invoke(this, logWarning);
         return true;
     }
 
     public bool Error(string logError)
     {
         PreLogActions?.Invoke(this);
-        LoggerHelper.CommitLog(this, logError, LogType.Error, true);
-        PostLogActions?.Invoke(this);
+        logError = LoggerHelper.CommitLog(this, logError, LogType.Error, true);
+        PostLogActions?.Invoke(this, logError);
         return true;
     }
 
@@ -104,25 +104,25 @@ public sealed partial class Logger : IAsyncLogger, IFileLogger, IRedirection<Tex
     public async Task<bool> LogAsync(string log)
     {
         PreLogActions?.Invoke(this);
-        var result = await LoggerHelper.CommitLogAsync(this, log, LogType.Log, true);
-        PostLogActions?.Invoke(this);
-        return result;
+        log = await LoggerHelper.CommitLogAsync(this, log, LogType.Log, true);
+        PostLogActions?.Invoke(this, log);
+        return true;
     }
 
     public async Task<bool> WarnAsync(string log)
     {
         PreLogActions?.Invoke(this);
         var result = await LoggerHelper.CommitLogAsync(this, log, LogType.Warning, true);
-        PostLogActions?.Invoke(this);
-        return result;
+        PostLogActions?.Invoke(this, result);
+        return true;
     }
 
     public async Task<bool> ErrorAsync(string log)
     {
         PreLogActions?.Invoke(this);
-        var result = await LoggerHelper.CommitLogAsync(this, log, LogType.Error, true);
-        PostLogActions?.Invoke(this);
-        return result;
+        log = await LoggerHelper.CommitLogAsync(this, log, LogType.Error, true);
+        PostLogActions?.Invoke(this, log);
+        return true;
     }
 
     public async Task FlushAsync()
